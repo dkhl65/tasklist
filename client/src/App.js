@@ -6,12 +6,14 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 function App() {
   const [task, setTask] = useState("");
   const [taskList, setTaskList] = useState([]);
+  const [ready, setReady] = useState(false);
 
   const refresh = () => {
     axios
       .get(`${BASE_URL}/`)
       .then((response) => {
         setTaskList(response.data.tasklist);
+        setReady(true);
       })
       .catch((error) => console.log(error));
   };
@@ -47,12 +49,16 @@ function App() {
         />
         <button type="submit">Submit</button>
       </form>
-      {taskList.map((item) => (
-        <div key={item.id}>
-          <h3>{item.task}</h3>
-          <button onClick={() => onDelete(item.id)}>Delete</button>
-        </div>
-      ))}
+      {ready ? (
+        taskList.map((item) => (
+          <div key={item.id}>
+            <h3>{item.task}</h3>
+            <button onClick={() => onDelete(item.id)}>Delete</button>
+          </div>
+        ))
+      ) : (
+        <h3>Loading...</h3>
+      )}
     </div>
   );
 }
